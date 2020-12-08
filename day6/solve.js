@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { array } = require('prop-types');
 
 let input = [];
 input = fs.readFileSync('input.txt', 'utf8').split('\n\n');
