@@ -65,13 +65,12 @@ function navigateWithWaypoint() {
             for(let i = 0; i < Math.abs(shiftNumber); i++) {
                 let {E, N} = wayPoint;
                 if(isRight != -1) {
-                    wayPoint.E = N < 0 ? N : N;
-                    wayPoint.N = E < 0 ? -E : -E;
+                    wayPoint.E = N;
+                    wayPoint.N = -E;
                 } else {
-                    wayPoint.N = E < 0 ? E : E;
-                    wayPoint.E = N < 0 ? -N : -N;
+                    wayPoint.N = E;
+                    wayPoint.E = -N;
                 }
-                console.log(wayPoint.N, wayPoint.E)
             }
         }
         if(cord.dir === 'F') {
