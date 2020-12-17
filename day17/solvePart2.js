@@ -1,0 +1,94 @@
+const fs = require('fs');
+
+const input = fs.readFileSync('input.txt', 'utf-8').split(/\n/g);
+console.log(input);
+
+function computeInitialState() {
+    let matrice = new Set();
+    input.forEach((row, iRow) => {
+        row.split('').forEach((col, iCol) => {
+            if(col === '#'){
+                matrice.add(`${iCol},${iRow},0,0`);
+            }
+        });
+    });
+    return matrice;
+}
+
+function getCoordinate(cord) {
+    return cord.split(',').map((e) => parseInt(e, 10));
+}
+
+
+function checkMatriceState(minX, maxX, minY, maxY, minZ, maxZ, minW, maxW, matrice) {
+    let updatedMatrice = new Set();
+    for (let x = minX - 1; x <= maxX + 1; x++) {
+        for (let y = minY - 1; y <= maxY + 1; y++) {
+            for (let z = minZ - 1; z <= maxZ + 1; z++) {
+                for (let w = minW - 1; w <= maxW + 1; w++) {
+                    let an = checkActiveNeighboor(`${x},${y},${z},${w}`, matrice);
+                    if (matrice.has(`${x},${y},${z},${w}`)) {
+                        if (an === 2 || an === 3) {
+                            updatedMatrice.add(`${x},${y},${z},${w}`);
+                        }
+                    } else {
+                        if (an === 3) {
+                            updatedMatrice.add(`${x},${y},${z},${w}`);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return updatedMatrice;
+}
+
+function checkActiveNeighboor(cord, matrice) {
+    const [x, y, z, w] = getCoordinate(cord);
+    let activeNeighboor = 0;
+    for (let xi = x - 1; xi <= x + 1; xi++) {
+        for (let yi = y - 1; yi <= y + 1; yi++) {
+            for (let zi = z - 1; zi <= z + 1; zi++) {
+                for (let wi = w - 1; wi <= w + 1; wi++) {
+                    if (!(xi === x && yi === y && zi === z && wi === w)) {
+                        if (matrice.has(`${xi},${yi},${zi},${wi}`)) {
+                            activeNeighboor++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return activeNeighboor;
+}
+
+function getMatriceMinMax(matrice) {
+    let [newMinX,newMaxX,newMinY,newMaxY,newMinZ,newMaxZ,newMinW,newMaxW] = [0,0,0,0,0,0,0,0];
+    const arrayX = [];
+    const arrayY = [];
+    const arrayZ = [];
+    const arrayW = [];
+    matrice.forEach((cord) => {
+        let [x,y,z,w] = getCoordinate(cord);
+        arrayX.push(x);
+        arrayY.push(y);
+        arrayZ.push(z);
+        arrayW.push(w);
+    });
+    newMinX = Math.min(...arrayX);
+    newMaxX = Math.max(...arrayX);
+    newMinY = Math.min(...arrayY);
+    newMaxY = Math.max(...arrayY);
+    newMinZ = Math.min(...arrayZ);
+    newMaxZ = Math.max(...arrayZ);
+    newMinW = Math.min(...arrayW);
+    newMaxW = Math.max(...arrayW);
+    return [newMinX, newMaxX, newMinY, newMaxY, newMinZ, newMaxZ, newMinW, newMaxW];
+}
+
+let matrice = computeInitialState();
+for(let i = 0; i<6; i++) {
+    let [minX,maxX,minY,maxY,minZ,maxZ,minW,maxW] = getMatriceMinMax(matrice);
+    matrice = checkMatriceState(minX,maxX,minY,maxY,minZ,maxZ,minW,maxW, matrice);
+}
+console.log('Part2', matrice.size);
