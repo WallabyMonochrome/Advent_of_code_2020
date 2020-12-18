@@ -44,7 +44,6 @@ function evaluateExpressionAdvenced(ex) {
     let leftValue = 0;
     let operator = '';
     for(let i = 0; i < ex.length; i++) {
-        console.log('EX:', ex[i]);
         let val = ex[i];
         if(typeof val === 'number') {
             if(operator === '+') leftValue += val;
